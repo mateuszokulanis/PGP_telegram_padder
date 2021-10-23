@@ -13,8 +13,9 @@ def gen_rand_numbers(section,lines):
     gen_lines = ''
     for i in range(lines*bytes_per_line):
         print(section + "randsection gen " + str(i) + '/' + str(lines*bytes_per_line))
-        number = r.randint(32, 126)
-        tmp = str(chr(number))
+        for i in range(6):
+            number = r.randint(0, 255)
+        tmp = str(hex(number)).lstrip("0x").rstrip("L")
         gen_lines += tmp
 
         if(small_iter == bytes_per_line):
