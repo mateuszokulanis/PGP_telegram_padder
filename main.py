@@ -13,16 +13,17 @@ def gen_rand_numbers(section,lines):
     gen_lines = ''
     for i in range(lines*bytes_per_line):
         print(section + "randsection gen " + str(i) + '/' + str(lines*bytes_per_line))
-        number = r.randint(0, 255)
-        tmp = str(hex(number)).lstrip("0x").rstrip('L')
+        number = r.randint(32, 126)
+        tmp = str(chr(number))
         gen_lines += tmp
+
         if(small_iter == bytes_per_line):
             m = hashlib.sha512()
             for i in range(sha512_iters):
                 m.update(gen_lines.encode('utf-8'))
             digest_str = str(binascii.hexlify(m.digest()))
             digest_str = digest_str[2:-1]
-            tmp_preamble += digest_str + "\n"
+            tmp_preamble += str(binascii.unhexlify(digest_str)).lstrip("'b").rstrip("'").replace("\\",str(chr(r.randint(32, 126)))) + "\n"
             small_iter = 0
             gen_lines = ""
             sleep(0.05)
@@ -33,7 +34,8 @@ def gen_rand_numbers(section,lines):
     return tmp_preamble
 
 r = random.SystemRandom()
-number = r.randint(0,255)
+for i in range(32767):
+    number = r.randint(0,255)
 
 
 preamble = r.randint(8,20)
@@ -45,7 +47,7 @@ postamble_str = gen_rand_numbers("POSTAMBLE GEN \t",postamble)
 ready_string = preamble_str + "\n<-----START----->\n\n" + "\n\n<-----STOP----->\n\n"+ postamble_str
 
 
-path = r'C:\Users\xxx\Desktop\message.txt'
+path = r'C:\Users\YoYo\Desktop\message.txt'
 File = open(path,'w')
 File.writelines(ready_string)
 File.close()
